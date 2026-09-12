@@ -10,10 +10,16 @@ import { env } from "../../config/env.js";
 import { HttpError } from "../../middleware/errorHandler.js";
 
 const REFRESH_COOKIE = "pdv_refresh_token";
+// Em produção, frontend e backend ficam em subdomínios diferentes (ex.: *.vercel.app),
+// o que o navegador trata como sites diferentes — por isso o cookie precisa de
+// SameSite=None (só permitido junto com Secure) para ser enviado nas requisições da
+// API feitas pelo frontend. Em desenvolvimento local ambos rodam em localhost com
+// portas diferentes mas mesmo site, então Lax (sem exigir HTTPS) já é suficiente.
+const cookieSameSite: "lax" | "none" = env.nodeEnv === "production" ? "none" : "lax";
 const REFRESH_COOKIE_OPTIONS = {
   httpOnly: true,
   secure: env.nodeEnv === "production",
-  sameSite: "lax" as const,
+  sameSite: cookieSameSite,
   path: "/api/auth",
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };

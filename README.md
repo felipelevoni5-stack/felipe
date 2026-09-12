@@ -171,3 +171,38 @@ reais** ao rodar a suíte.
     ajuste o desconto máximo do operador. Salve, recarregue a página e confirme que os
     valores persistiram. Entre como `OPERADOR` ou `GERENTE` e confirme que o item
     "Configurações" não aparece no menu.
+
+## Deploy em produção (Vercel)
+
+O backend (`apps/api`) e o frontend (`apps/web`) são publicados como **dois projetos
+Vercel separados**, cada um apontando para uma pasta do mesmo repositório GitHub.
+
+### Backend (`apps/api`)
+
+- **Root Directory**: `apps/api`
+- **Framework Preset**: Other
+- **Build Command**: `npx prisma generate && npx prisma migrate deploy`
+- **Output Directory**: deixar em branco (não gera arquivos estáticos)
+- **Variáveis de ambiente**: `DATABASE_URL` (do banco de produção, separado do banco
+  usado em desenvolvimento/testes), `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET` (valores
+  aleatórios únicos, nunca reaproveitados do `.env` local), `NODE_ENV=production`,
+  `TRUST_PROXY=true`, `WEB_ORIGIN` (a URL do projeto do frontend na Vercel, ex.:
+  `https://pdv-pro-web.vercel.app`, sem barra no final).
+
+O ponto de entrada usado pela Vercel é `apps/api/api/index.ts` (formato de função
+serverless) e `apps/api/vercel.json` redireciona todas as rotas para essa função — o
+código do Express em `src/app.ts` continua sendo o mesmo usado em desenvolvimento local.
+
+### Frontend (`apps/web`)
+
+- **Root Directory**: `apps/web`
+- **Framework Preset**: Vite (detectado automaticamente)
+- **Variáveis de ambiente**: `VITE_API_URL` (a URL do projeto do backend na Vercel, ex.:
+  `https://pdv-pro-api.vercel.app`, sem barra no final e sem `/api`).
+
+### Ordem recomendada
+
+1. Criar o projeto do backend primeiro e anotar sua URL.
+2. Criar o projeto do frontend usando essa URL em `VITE_API_URL`.
+3. Voltar ao projeto do backend e atualizar `WEB_ORIGIN` com a URL final do frontend,
+   depois rodar um novo deploy (redeploy) para aplicar a variável.
