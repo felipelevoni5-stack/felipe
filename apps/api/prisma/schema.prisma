@@ -1,0 +1,434 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  GERENTE
+  OPERADOR
+}
+
+enum StockMovementType {
+  ENTRADA
+  SAIDA
+  AJUSTE
+  INVENTARIO
+  VENDA
+  CANCELAMENTO
+}
+
+enum SaleStatus {
+  CONCLUIDA
+  CANCELADA
+}
+
+enum PaymentMethod {
+  DINHEIRO
+  PIX
+  DEBITO
+  CREDITO
+  OUTRO
+}
+
+enum CashSessionStatus {
+  ABERTO
+  FECHADO
+}
+
+enum CashMovementType {
+  SANGRIA
+  SUPRIMENTO
+}
+
+// Empresa (cliente da plataforma SaaS). Todo dado comercial pertence a um Tenant.
+model Tenant {
+  id                 String   @id @default(cuid())
+  name               String
+  document           String? // CNPJ/CPF, opcional nesta etapa
+  active             Boolean  @default(true)
+  // Se false (padrão), uma saída de estoque que deixaria a quantidade negativa é bloqueada.
+  allowNegativeStock Boolean  @default(false)
+  // Desconto máximo (%) que um usuário OPERADOR pode aplicar sozinho numa venda. ADMIN/GERENTE não têm limite.
+  operatorMaxDiscountPercent Decimal @default(0) @db.Decimal(5, 2)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  stores              Store[]
+  users               User[]
+  auditLogs           AuditLog[]
+  passwordResetTokens PasswordResetToken[]
+  categories          Category[]
+  products            Product[]
+  stockMovements      StockMovement[]
+  sales               Sale[]
+  cashRegisters       CashRegister[]
+  cashSessions        CashSession[]
+  cashMovements       CashMovement[]
+  customers           Customer[]
+
+  @@map("tenants")
+}
+
+// Loja física de uma empresa. Uma empresa pode ter várias lojas no futuro.
+model Store {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  users         User[]
+  sales         Sale[]
+  cashRegisters CashRegister[]
+  cashSessions  CashSession[]
+
+  @@index([tenantId])
+  @@map("stores")
+}
+
+// Usuário de uma empresa (administrador, gerente ou operador de caixa).
+model User {
+  id           String   @id @default(cuid())
+  tenantId     String
+  storeId      String?
+  name         String
+  // Único globalmente (não só por empresa): o login identifica o usuário e a
+  // empresa a partir do e-mail sozinho, então dois tenants não podem compartilhar
+  // um e-mail — isso evitaria login/recuperação de senha ambíguos entre empresas.
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(OPERADOR)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tenant              Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  store               Store?                @relation(fields: [storeId], references: [id])
+  refreshTokens        RefreshToken[]
+  passwordResetTokens  PasswordResetToken[]
+  auditLogs            AuditLog[]
+  stockMovements       StockMovement[]
+  sales                Sale[]
+  cashMovements        CashMovement[]
+  cashSessionsOpened   CashSession[]         @relation("CashSessionsOpened")
+  cashSessionsClosed   CashSession[]         @relation("CashSessionsClosed")
+
+  @@index([tenantId])
+  @@map("users")
+}
+
+// Categoria de produtos, usada para organização e filtros.
+model Category {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  products Product[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@map("categories")
+}
+
+// Produto vendável. sku/barcode são opcionais mas únicos dentro da empresa quando informados.
+model Product {
+  id            String   @id @default(cuid())
+  tenantId      String
+  categoryId    String?
+  name          String
+  sku           String?
+  barcode       String?
+  brand         String?
+  description   String?
+  costPrice     Decimal  @db.Decimal(12, 2)
+  salePrice     Decimal  @db.Decimal(12, 2)
+  stockQuantity Decimal  @default(0) @db.Decimal(12, 3)
+  minStock      Decimal  @default(0) @db.Decimal(12, 3)
+  unit          String   @default("UN")
+  supplierName  String?
+  imageUrl      String?
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  tenant         Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  category       Category?       @relation(fields: [categoryId], references: [id])
+  stockMovements StockMovement[]
+  saleItems      SaleItem[]
+
+  @@unique([tenantId, sku])
+  @@unique([tenantId, barcode])
+  @@index([tenantId])
+  @@index([tenantId, active])
+  @@map("products")
+}
+
+// Toda alteração de quantidade em estoque passa por aqui — nunca alteramos
+// Product.stockQuantity diretamente sem registrar o movimento correspondente.
+model StockMovement {
+  id               String            @id @default(cuid())
+  tenantId         String
+  productId        String
+  userId           String?
+  saleId           String?
+  type             StockMovementType
+  quantity         Decimal           @db.Decimal(12, 3) // delta assinado (+entrada/-saída)
+  previousQuantity Decimal           @db.Decimal(12, 3)
+  newQuantity      Decimal           @db.Decimal(12, 3)
+  reason           String?
+  createdAt        DateTime          @default(now())
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  sale    Sale?   @relation(fields: [saleId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId])
+  @@index([productId])
+  @@index([saleId])
+  @@map("stock_movements")
+}
+
+// Venda concluída. Nunca é apagada fisicamente — cancelamento muda o status e devolve estoque.
+// cashSessionId é opcional apenas por compatibilidade com vendas criadas antes deste
+// módulo existir; toda venda nova exige um caixa aberto (ver sales.service.ts).
+model Sale {
+  id              String     @id @default(cuid())
+  tenantId        String
+  storeId         String?
+  userId          String
+  cashSessionId   String?
+  customerId      String?
+  status          SaleStatus @default(CONCLUIDA)
+  subtotal        Decimal    @db.Decimal(12, 2)
+  discountTotal   Decimal    @default(0) @db.Decimal(12, 2)
+  total           Decimal    @db.Decimal(12, 2)
+  amountPaid      Decimal    @db.Decimal(12, 2)
+  changeAmount    Decimal    @default(0) @db.Decimal(12, 2)
+  // Chave de idempotência gerada pelo cliente: evita duplicar a venda em duplo clique/retry de rede.
+  clientRequestId String?
+  cancelledAt     DateTime?
+  cancelReason    String?
+  createdAt       DateTime   @default(now())
+
+  tenant         Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  store          Store?          @relation(fields: [storeId], references: [id])
+  user           User            @relation(fields: [userId], references: [id])
+  cashSession    CashSession?    @relation(fields: [cashSessionId], references: [id])
+  customer       Customer?       @relation(fields: [customerId], references: [id])
+  items          SaleItem[]
+  payments       Payment[]
+  stockMovements StockMovement[]
+
+  @@unique([tenantId, clientRequestId])
+  @@index([tenantId])
+  @@index([tenantId, createdAt])
+  @@map("sales")
+}
+
+// Item vendido. Guarda um retrato do nome/preço no momento da venda — mudanças
+// futuras no cadastro do produto não alteram vendas já concluídas.
+model SaleItem {
+  id          String  @id @default(cuid())
+  saleId      String
+  productId   String
+  productName String
+  unitPrice   Decimal @db.Decimal(12, 2)
+  quantity    Decimal @db.Decimal(12, 3)
+  discount    Decimal @default(0) @db.Decimal(12, 2)
+  subtotal    Decimal @db.Decimal(12, 2)
+
+  sale    Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([saleId])
+  @@index([productId])
+  @@map("sale_items")
+}
+
+model Payment {
+  id     String        @id @default(cuid())
+  saleId String
+  method PaymentMethod
+  amount Decimal       @db.Decimal(12, 2)
+
+  sale Sale @relation(fields: [saleId], references: [id], onDelete: Cascade)
+
+  @@index([saleId])
+  @@map("payments")
+}
+
+// Caixa físico de uma loja. Uma loja tem ao menos um (criado automaticamente).
+model CashRegister {
+  id        String   @id @default(cuid())
+  tenantId  String
+  storeId   String
+  name      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  tenant   Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  store    Store         @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  sessions CashSession[]
+
+  @@index([tenantId])
+  @@index([storeId])
+  @@map("cash_registers")
+}
+
+// Sessão de caixa: do momento da abertura até o fechamento. Imutável após fechada
+// (os totais de fechamento são um retrato congelado no momento do fechamento).
+model CashSession {
+  id             String            @id @default(cuid())
+  tenantId       String
+  storeId        String
+  cashRegisterId String
+  status         CashSessionStatus @default(ABERTO)
+  openingAmount  Decimal           @db.Decimal(12, 2)
+  openedByUserId String
+  openedAt       DateTime          @default(now())
+  closedByUserId String?
+  closedAt       DateTime?
+
+  // Preenchidos somente no fechamento — retrato imutável do período.
+  countedCash          Decimal? @db.Decimal(12, 2)
+  expectedCash         Decimal? @db.Decimal(12, 2)
+  difference           Decimal? @db.Decimal(12, 2)
+  totalDinheiro        Decimal? @db.Decimal(12, 2)
+  totalPix             Decimal? @db.Decimal(12, 2)
+  totalDebito          Decimal? @db.Decimal(12, 2)
+  totalCredito         Decimal? @db.Decimal(12, 2)
+  totalOutro           Decimal? @db.Decimal(12, 2)
+  totalSangrias        Decimal? @db.Decimal(12, 2)
+  totalSuprimentos     Decimal? @db.Decimal(12, 2)
+  totalCancelado       Decimal? @db.Decimal(12, 2)
+  closingJustification String?
+
+  tenant       Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  store        Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  cashRegister CashRegister   @relation(fields: [cashRegisterId], references: [id], onDelete: Cascade)
+  openedBy     User           @relation("CashSessionsOpened", fields: [openedByUserId], references: [id])
+  closedBy     User?          @relation("CashSessionsClosed", fields: [closedByUserId], references: [id])
+  movements    CashMovement[]
+  sales        Sale[]
+
+  @@index([tenantId])
+  @@index([cashRegisterId, status])
+  @@map("cash_sessions")
+}
+
+// Sangria (retirada) ou suprimento (entrada) de dinheiro no caixa, fora das vendas.
+model CashMovement {
+  id            String           @id @default(cuid())
+  tenantId      String
+  cashSessionId String
+  type          CashMovementType
+  amount        Decimal          @db.Decimal(12, 2)
+  reason        String
+  userId        String
+  createdAt     DateTime         @default(now())
+
+  tenant      Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  cashSession CashSession @relation(fields: [cashSessionId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id])
+
+  @@index([tenantId])
+  @@index([cashSessionId])
+  @@map("cash_movements")
+}
+
+// Cliente da loja. Cadastro opcional — a venda no PDV nunca exige um cliente.
+// document (CPF) é opcional e só deve ser pedido quando realmente necessário.
+model Customer {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  phone     String?
+  email     String?
+  document  String?
+  notes     String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  sales  Sale[]
+
+  @@index([tenantId])
+  @@map("customers")
+}
+
+// Administrador da plataforma SaaS — separado dos usuários de cada empresa.
+model PlatformUser {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("platform_users")
+}
+
+// Refresh tokens de sessão, armazenados com hash para permitir revogação/logout real.
+model RefreshToken {
+  id         String   @id @default(cuid())
+  userId     String
+  tokenHash  String   @unique
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tenantId  String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+// Trilha de auditoria de ações sensíveis (login, criação/edição de usuário, etc.).
+model AuditLog {
+  id         String   @id @default(cuid())
+  tenantId   String?
+  userId     String?
+  action     String
+  entity     String
+  entityId   String?
+  metadata   Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId])
+  @@index([userId])
+  @@map("audit_logs")
+}
