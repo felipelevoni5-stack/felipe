@@ -174,8 +174,14 @@ reais** ao rodar a suíte.
 
 ## Deploy em produção (Vercel)
 
+O sistema está no ar:
+
+- **Site**: https://felipe-web-nine.vercel.app
+- **API**: https://felipe-api.vercel.app
+
 O backend (`apps/api`) e o frontend (`apps/web`) são publicados como **dois projetos
-Vercel separados**, cada um apontando para uma pasta do mesmo repositório GitHub.
+Vercel separados** (`felipe-api` e `felipe-web`), cada um apontando para uma pasta do
+mesmo repositório GitHub.
 
 ### Backend (`apps/api`)
 
@@ -186,8 +192,8 @@ Vercel separados**, cada um apontando para uma pasta do mesmo repositório GitHu
 - **Variáveis de ambiente**: `DATABASE_URL` (do banco de produção, separado do banco
   usado em desenvolvimento/testes), `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET` (valores
   aleatórios únicos, nunca reaproveitados do `.env` local), `NODE_ENV=production`,
-  `TRUST_PROXY=true`, `WEB_ORIGIN` (a URL do projeto do frontend na Vercel, ex.:
-  `https://pdv-pro-web.vercel.app`, sem barra no final).
+  `TRUST_PROXY=true`, `WEB_ORIGIN=https://felipe-web-nine.vercel.app` (a URL do
+  projeto do frontend na Vercel, sem barra no final).
 
 O ponto de entrada usado pela Vercel é `apps/api/api/index.ts` (formato de função
 serverless) e `apps/api/vercel.json` redireciona todas as rotas para essa função — o
@@ -197,12 +203,23 @@ código do Express em `src/app.ts` continua sendo o mesmo usado em desenvolvimen
 
 - **Root Directory**: `apps/web`
 - **Framework Preset**: Vite (detectado automaticamente)
-- **Variáveis de ambiente**: `VITE_API_URL` (a URL do projeto do backend na Vercel, ex.:
-  `https://pdv-pro-api.vercel.app`, sem barra no final e sem `/api`).
+- **Variáveis de ambiente**: `VITE_API_URL=https://felipe-api.vercel.app` (a URL do
+  projeto do backend na Vercel, sem barra no final e sem `/api`).
 
-### Ordem recomendada
+### Ordem recomendada (para recriar do zero, ex.: outro ambiente)
 
 1. Criar o projeto do backend primeiro e anotar sua URL.
 2. Criar o projeto do frontend usando essa URL em `VITE_API_URL`.
 3. Voltar ao projeto do backend e atualizar `WEB_ORIGIN` com a URL final do frontend,
    depois rodar um novo deploy (redeploy) para aplicar a variável.
+
+### Observações importantes
+
+- Como o frontend e o backend ficam em subdomínios `.vercel.app` diferentes, o
+  navegador os trata como sites diferentes — por isso o cookie de sessão usa
+  `SameSite=None; Secure` em produção (ver `apps/api/src/modules/auth/auth.controller.ts`).
+- Alguns pacotes CJS (`helmet`, `cors`, `cookie-parser`, `express-rate-limit`) precisam
+  ser importados via `createRequire` em vez de `import x from "pkg"` — o verificador de
+  tipos usado pelo build da Vercel trata o import padrão desses pacotes como não
+  chamável, mesmo com `esModuleInterop` ativado (funciona normalmente com `tsc` local).
+  Ver `apps/api/src/app.ts` e `apps/api/src/modules/auth/auth.routes.ts`.
