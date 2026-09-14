@@ -1,7 +1,20 @@
-import { Router } from "express";
-import rateLimit from "express-rate-limit";
+import { Router, type Request, type RequestHandler } from "express";
+import { createRequire } from "node:module";
 import { asyncHandler } from "../../lib/asyncHandler.js";
 import * as authController from "./auth.controller.js";
+
+// Ver comentário equivalente em app.ts: o build da Vercel não trata esse import default
+// como chamável, mesmo com esModuleInterop ativado.
+const require = createRequire(import.meta.url);
+const rateLimit = require("express-rate-limit") as (options: {
+  windowMs: number;
+  limit: number;
+  standardHeaders: boolean;
+  legacyHeaders: boolean;
+  skip: () => boolean;
+  keyGenerator?: (req: Request) => string;
+  message: unknown;
+}) => RequestHandler;
 
 // Testes automatizados fazem muito mais cadastros/logins por hora do que qualquer
 // uso real, e todos a partir do mesmo IP — sem isso, a suíte de testes esgota os
