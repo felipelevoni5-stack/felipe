@@ -1,8 +1,15 @@
-import express from "express";
+import express, { type RequestHandler } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import helmet from "helmet";
+import { createRequire } from "node:module";
 import { env } from "./config/env.js";
+
+// Import via createRequire em vez de `import helmet from "helmet"`: em alguns ambientes
+// de build (observado no Vercel), o TypeScript resolve o tipo do módulo CJS do helmet
+// como não-chamável, mesmo com esModuleInterop ativado. Isso contorna a checagem de
+// tipos do import problemático sem afetar o comportamento em tempo de execução.
+const require = createRequire(import.meta.url);
+const helmet = require("helmet") as (options?: Record<string, unknown>) => RequestHandler;
 import { authRouter } from "./modules/auth/auth.routes.js";
 import { usersRouter } from "./modules/users/users.routes.js";
 import { meRouter } from "./modules/me/me.routes.js";
