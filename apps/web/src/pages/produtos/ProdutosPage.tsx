@@ -84,7 +84,7 @@ export function ProdutosPage() {
         {canManage && (
           <button
             onClick={openCreate}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
           >
             Novo produto
           </button>
@@ -188,7 +188,7 @@ export function ProdutosPage() {
                 </td>
                 {canManage && (
                   <td className="px-4 py-3 text-right">
-                    <button onClick={() => openEdit(p)} className="text-sm text-blue-600 hover:underline">
+                    <button onClick={() => openEdit(p)} className="text-sm text-violet-600 hover:underline">
                       Editar
                     </button>
                   </td>

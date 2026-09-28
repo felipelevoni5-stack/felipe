@@ -191,7 +191,7 @@ export function PDVPage() {
           onChange={(e) => setCode(e.target.value)}
           onKeyDown={handleCodeKeyDown}
           placeholder="Código de barras, SKU ou nome do produto"
-          className="w-full rounded-md border border-slate-300 px-4 py-3 text-base focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full rounded-md border border-slate-300 px-4 py-3 text-base focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
           autoFocus
         />
         {suggestions.length > 0 && (
@@ -346,7 +346,7 @@ export function PDVPage() {
         <button
           onClick={() => setShowPayment(true)}
           disabled={cart.length === 0 || total <= 0 || discountBlocked}
-          className="rounded-md bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+          className="rounded-md bg-violet-600 px-6 py-2 text-sm font-medium text-white hover:bg-violet-700 disabled:opacity-50"
         >
           Finalizar venda
         </button>

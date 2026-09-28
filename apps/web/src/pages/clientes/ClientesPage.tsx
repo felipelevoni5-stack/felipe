@@ -60,7 +60,7 @@ export function ClientesPage() {
             setEditingCustomer(null);
             setShowForm((v) => !v);
           }}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
         >
           Novo cliente
         </button>
@@ -145,7 +145,7 @@ export function ClientesPage() {
                           setEditingCustomer(c);
                           setShowForm(true);
                         }}
-                        className="text-sm text-blue-600 hover:underline"
+                        className="text-sm text-violet-600 hover:underline"
                       >
                         Editar
                       </button>
@@ -154,7 +154,7 @@ export function ClientesPage() {
                           onClick={() =>
                             setHistoryCustomerId(historyCustomerId === c.id ? null : c.id)
                           }
-                          className="text-sm text-blue-600 hover:underline"
+                          className="text-sm text-violet-600 hover:underline"
                         >
                           {historyCustomerId === c.id ? "Ocultar" : "Histórico"}
                         </button>

@@ -50,7 +50,7 @@ export function ClosedSessionSummary({
 
         <button
           onClick={onDismiss}
-          className="mt-4 w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="mt-4 w-full rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
         >
           Ok
         </button>

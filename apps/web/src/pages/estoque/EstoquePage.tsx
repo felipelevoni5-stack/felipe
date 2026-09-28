@@ -119,7 +119,7 @@ export function EstoquePage() {
                 )}
                 <button
                   onClick={() => setHistoryProductId(historyProductId === p.id ? null : p.id)}
-                  className="text-xs text-blue-600 hover:underline"
+                  className="text-xs text-violet-600 hover:underline"
                 >
                   {historyProductId === p.id ? "Ocultar histórico" : "Histórico"}
                 </button>

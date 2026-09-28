@@ -116,7 +116,7 @@ export function PaymentPanel({
           <button
             type="button"
             onClick={addLine}
-            className="text-xs font-medium text-blue-600 hover:underline"
+            className="text-xs font-medium text-violet-600 hover:underline"
           >
             + Adicionar forma de pagamento
           </button>
@@ -155,7 +155,7 @@ export function PaymentPanel({
             type="button"
             onClick={handleConfirm}
             disabled={submitting || missing > 0}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
+            className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700 disabled:opacity-60"
           >
             {submitting ? "Finalizando..." : "Confirmar pagamento"}
           </button>

@@ -137,7 +137,7 @@ export function ConfiguracoesPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
+          className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700 disabled:opacity-60"
         >
           {submitting ? "Salvando..." : "Salvar configurações"}
         </button>

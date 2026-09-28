@@ -26,7 +26,7 @@ export function Login() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-violet-50 px-4">
       <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-xl font-semibold text-slate-900">PDV PRO</h1>
         <p className="mt-1 text-sm text-slate-500">Entre com sua conta para continuar.</p>
@@ -43,7 +43,7 @@ export function Login() {
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
             />
           </div>
           <div>
@@ -57,7 +57,7 @@ export function Login() {
               autoComplete="current-password"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
             />
           </div>
 
@@ -66,17 +66,17 @@ export function Login() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-60"
+            className="w-full rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-violet-700 disabled:opacity-60"
           >
             {submitting ? "Entrando..." : "Entrar"}
           </button>
         </form>
 
         <div className="mt-4 flex justify-between text-sm">
-          <Link to="/esqueci-senha" className="text-blue-600 hover:underline">
+          <Link to="/esqueci-senha" className="text-violet-600 hover:underline">
             Esqueci minha senha
           </Link>
-          <Link to="/cadastro-empresa" className="text-blue-600 hover:underline">
+          <Link to="/cadastro-empresa" className="text-violet-600 hover:underline">
             Cadastrar empresa
           </Link>
         </div>

@@ -26,7 +26,7 @@ export function RelatoriosPage() {
             onClick={() => setTab(t.id)}
             className={`px-4 py-2 text-sm font-medium ${
               tab === t.id
-                ? "border-b-2 border-blue-600 text-blue-600"
+                ? "border-b-2 border-violet-600 text-violet-600"
                 : "text-slate-500 hover:text-slate-700"
             }`}
           >

@@ -38,7 +38,7 @@ export function SignupEmpresa() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-10">
+    <div className="flex min-h-screen items-center justify-center bg-violet-50 px-4 py-10">
       <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-xl font-semibold text-slate-900">Criar sua empresa</h1>
         <p className="mt-1 text-sm text-slate-500">
@@ -70,7 +70,7 @@ export function SignupEmpresa() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-60"
+            className="w-full rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-violet-700 disabled:opacity-60"
           >
             {submitting ? "Criando..." : "Criar empresa"}
           </button>
@@ -78,7 +78,7 @@ export function SignupEmpresa() {
 
         <p className="mt-4 text-sm text-slate-500">
           Já tem uma conta?{" "}
-          <Link to="/login" className="text-blue-600 hover:underline">
+          <Link to="/login" className="text-violet-600 hover:underline">
             Entrar
           </Link>
         </p>
@@ -97,7 +97,7 @@ function Field({
       <label className="block text-sm font-medium text-slate-700">{label}</label>
       <input
         {...props}
-        className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
       />
       {hint && <p className="mt-1 text-xs text-slate-400">{hint}</p>}
     </div>

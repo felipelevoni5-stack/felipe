@@ -7,8 +7,13 @@ export function Sidebar() {
 
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-slate-200 bg-white">
-      <div className="border-b border-slate-200 px-5 py-4">
-        <span className="text-lg font-semibold text-blue-600">PDV PRO</span>
+      <div className="flex items-center gap-2.5 border-b border-slate-200 px-5 py-4">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-600 text-sm font-bold text-white">
+          P
+        </span>
+        <span className="text-lg font-bold tracking-tight text-slate-900">
+          PDV <span className="text-violet-600">PRO</span>
+        </span>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-2 py-4">
@@ -21,10 +26,10 @@ export function Sidebar() {
                   to={item.to}
                   className={({ isActive }) =>
                     [
-                      "flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition",
+                      "flex items-center justify-between rounded-md border-l-[3px] px-3 py-2 text-sm font-medium transition-colors",
                       isActive
-                        ? "bg-blue-50 text-blue-700"
-                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+                        ? "border-violet-600 bg-violet-50 text-violet-700"
+                        : "border-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900",
                     ].join(" ")
                   }
                 >

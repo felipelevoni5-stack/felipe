@@ -79,7 +79,7 @@ export function VisaoGeral() {
         <div className="mt-8 rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center">
           <p className="text-sm text-slate-500">
             Nenhuma venda registrada hoje ainda.{" "}
-            <Link to="/pdv" className="font-medium text-blue-600 hover:underline">
+            <Link to="/pdv" className="font-medium text-violet-600 hover:underline">
               Ir para o PDV
             </Link>
           </p>

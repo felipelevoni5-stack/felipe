@@ -44,7 +44,7 @@ export function CustomerPicker({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="text-sm text-blue-600 hover:underline"
+        className="text-sm text-violet-600 hover:underline"
       >
         + Identificar cliente (opcional)
       </button>
