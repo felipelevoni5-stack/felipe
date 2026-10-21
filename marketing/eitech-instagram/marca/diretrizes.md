@@ -63,12 +63,23 @@ Empresários e gestores de assistências técnicas de celulares.
 
 ## Identidade visual
 
-- Cores (hex): PREENCHER — usar as cores dos posts atuais do Instagram (o ambiente do
-  agente não consegue abrir o Instagram nem a landing page; informar os códigos ou
-  enviar um print)
-- Fontes: PREENCHER
-- Logo: coloque o arquivo em `marca/logo.png` (e `marca/logo-branco.png`, se houver)
-- Estilo das imagens: PREENCHER
+- Cores (aproximadas, tiradas de um print do carrossel publicado em 30/09):
+  - Fundo: degradê verde-petróleo escuro `#0B3B3A` → `#14564F`
+  - Destaque (palavras-chave e rótulos): verde-menta `#6EE7A8`
+  - Texto principal: branco `#FFFFFF`; texto de apoio: branco com ~85% de opacidade
+- Fontes: sans-serif bem pesada nos títulos (ex.: Manrope ExtraBold ou Inter Black) e
+  a mesma família em peso regular no texto de apoio
+- Logo: "EITECH" em branco com ícone circular, no canto superior esquerdo. Coloque o
+  arquivo em `marca/logo.png`; enquanto não existir, escrever "EITECH" em texto branco
+- Estilo das imagens (padrão do carrossel atual):
+  - Rótulo pequeno em verde-menta e caixa alta no topo (ex.: "PÓS-VENDA")
+  - Título grande em branco, com a segunda frase em verde-menta
+    (ex.: "O conserto termina no balcão. **O relacionamento, não.**")
+  - Subtítulo curto em branco com palavra-chave em negrito
+  - Contador de slides no canto superior direito (ex.: "1/6")
+  - Rodapé: "Relacionamento que traz cliente de volta" à esquerda e "Arrasta →" em
+    verde-menta à direita (só no primeiro slide de carrosséis)
+  - Formato 1080×1350, sem fotos de banco de imagem genéricas
 
 ## Mix de conteúdo (sugestão inicial — o agente ajusta pelas métricas)
 
