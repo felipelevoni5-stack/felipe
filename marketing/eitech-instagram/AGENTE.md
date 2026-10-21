@@ -108,8 +108,11 @@ agente são os arquivos desta pasta.** Siga sempre esta ordem:
 - Cada post vive em `posts/AAAA-MM-DD-slug/` com:
   - `post.md` — formato, objetivo, legenda final, hashtags, CTA, horário, status;
   - as mídias (`slide-01.png`, `slide-02.png`, … ou `video.mp4`).
-- Imagens e carrosséis: monte em HTML/CSS com a identidade visual da marca e exporte
-  em PNG 1080×1350 (retrato) ou 1080×1080 com o Chromium/Playwright do ambiente.
+- Imagens e carrosséis: use `ferramentas/gerar_posts.py`, que já aplica a identidade
+  visual da marca e exporta PNG 1080×1350 com o Chromium do ambiente. Escreva os slides
+  num JSON no formato de `ferramentas/exemplo-posts.json` e rode
+  `python3 -I ferramentas/gerar_posts.py posts/ <arquivo.json>`. Confira as imagens
+  geradas antes de marcar o post como `pronto`.
 - Vídeos/Reels: enquanto não houver ferramenta de vídeo configurada, produza roteiro +
   texto na tela + sugestão de trilha em `post.md` e marque o status `aguardando-gravacao`.
   Isso entra no relatório semanal para o proprietário gravar, se quiser. Não trave o
