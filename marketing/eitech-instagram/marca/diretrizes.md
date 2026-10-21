@@ -6,10 +6,41 @@
 
 ## Quem é a EITECH
 
-- O que a EITECH oferece: **pós-venda para assistências técnicas de celular**
-  (relacionamento com o cliente depois do conserto).
-- Principais produtos/serviços e benefícios: PREENCHER (como funciona o pós-venda, o
-  que a assistência ganha: ex.: mais retorno de clientes, avaliações, indicações?)
+- O que a EITECH oferece: **pós-venda automatizado para assistências técnicas de
+  celulares**. O objetivo é automatizar o relacionamento para que a assistência não
+  perca contato com seus clientes após entregar o aparelho.
+
+### Como funciona
+
+A assistência fornece uma planilha com os dados dos clientes e os serviços realizados,
+e o sistema organiza uma jornada de relacionamento pelo **WhatsApp**:
+
+- **Após 7 dias:** pergunta como ficou o aparelho depois do conserto e acompanha a
+  satisfação do cliente.
+- **Após 30 dias:** envia dicas de cuidados com o aparelho e reforça o relacionamento
+  com a assistência.
+- **Após 90 dias:** envia uma oferta personalizada conforme o serviço realizado,
+  incentivando o retorno.
+- **Avaliações Google:** solicita avaliações dos clientes em momentos apropriados,
+  ajudando a fortalecer a reputação da assistência.
+
+### O que a assistência ganha (benefícios para usar nos posts)
+
+- **Mais fidelização:** mantém a assistência presente na memória dos clientes.
+- **Mais oportunidades de retorno:** incentiva novos serviços e compras.
+- **Mais avaliações no Google:** fortalece a reputação e a presença digital.
+- **Mais indicações:** clientes satisfeitos têm mais motivos para recomendar a loja.
+- **Economia de tempo:** reduz o trabalho manual de acompanhar cada cliente.
+- **Mais oportunidades de faturamento:** aproveita a base de clientes que a assistência
+  já conquistou.
+- **Atendimento mais profissional:** demonstra preocupação com o cliente mesmo depois
+  do conserto.
+
+> Não inventar números de resultado (ex.: "aumente 40% o retorno"), depoimentos ou
+> nomes de clientes. Use os benefícios acima sem prometer resultado garantido.
+
+### Outras informações
+
 - Diferenciais em relação à concorrência: PREENCHER
 - Cidade/região de atuação: PREENCHER
 - Perfil do Instagram: @eitechrelacionamentos (https://www.instagram.com/eitechrelacionamentos/)
