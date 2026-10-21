@@ -6,13 +6,16 @@
 
 ## Quem é a EITECH
 
-- O que a EITECH oferece: PREENCHER (ex.: sistema de gestão, peças, treinamentos, consultoria…)
-- Principais produtos/serviços e benefícios: PREENCHER
+- O que a EITECH oferece: **pós-venda para assistências técnicas de celular**
+  (relacionamento com o cliente depois do conserto).
+- Principais produtos/serviços e benefícios: PREENCHER (como funciona o pós-venda, o
+  que a assistência ganha: ex.: mais retorno de clientes, avaliações, indicações?)
 - Diferenciais em relação à concorrência: PREENCHER
 - Cidade/região de atuação: PREENCHER
-- Perfil do Instagram: PREENCHER (@...)
-- Site: PREENCHER
-- Contato para conversão (link da bio, WhatsApp, formulário): PREENCHER
+- Perfil do Instagram: @eitechrelacionamentos (https://www.instagram.com/eitechrelacionamentos/)
+- Site: https://eitech-landing.pages.dev/ (landing page com botão para o WhatsApp)
+- Contato para conversão: **link da bio** → landing page → WhatsApp. Todo CTA deve
+  direcionar para o link da bio (ex.: "Fale com a gente pelo link da bio").
 
 ## Público-alvo
 
@@ -29,7 +32,9 @@ Empresários e gestores de assistências técnicas de celulares.
 
 ## Identidade visual
 
-- Cores (hex): PREENCHER
+- Cores (hex): PREENCHER — usar as cores dos posts atuais do Instagram (o ambiente do
+  agente não consegue abrir o Instagram nem a landing page; informar os códigos ou
+  enviar um print)
 - Fontes: PREENCHER
 - Logo: coloque o arquivo em `marca/logo.png` (e `marca/logo-branco.png`, se houver)
 - Estilo das imagens: PREENCHER
